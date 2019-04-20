@@ -207,3 +207,25 @@ class SqPartialLine {
         this.curr.startUpdating(cb)
     }
 }
+
+class Renderer {
+
+    spl : SqPartialLine = new SqPartialLine()
+    animator : Animator = new Animator()
+
+    render(context : CanvasRenderingContext2D) {
+        this.spl.draw(context)
+    }
+
+    handleTap(cb : Function) {
+        this.spl.startUpdating(() => {
+            this.animator.start(() => {
+                cb()
+                this.spl.update(() => {
+                    this.animator.stop()
+                    cb()
+                })
+            })
+        })
+    }
+}
