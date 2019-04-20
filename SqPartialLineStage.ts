@@ -8,7 +8,7 @@ const strokeFactor : number = 90
 const sizeFactor : number = 2.9
 const foreColor : string = "#388E3C"
 const backColor : string = "#BDBDBD"
-const rSizeFactor : number = 0.9
+const rSizeFactor : number = 0.7
 
 class SqPartialLineStage {
 
@@ -72,6 +72,9 @@ class ScaleUtil {
 class DrawingUtil {
 
     static drawPartialLine(context : CanvasRenderingContext2D, size : number, i : number, sc : number) {
+        if (sc == 0) {
+            return
+        }
         context.save()
         context.translate(size * rSizeFactor, size * rSizeFactor)
         context.beginPath()
@@ -94,7 +97,10 @@ class DrawingUtil {
         context.rotate(Math.PI / 2 * sc2)
         context.strokeRect(-size, -size, 2 * size, 2 * size)
         for (var j = 0; j < lines; j++) {
+            context.save()
+            context.rotate(Math.PI/2 * j)
             DrawingUtil.drawPartialLine(context, size, j, ScaleUtil.divideScale(sc1, j, lines))
+            context.restore()
         }
         context.restore()
     }
