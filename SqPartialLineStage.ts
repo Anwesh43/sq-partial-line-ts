@@ -8,6 +8,7 @@ const strokeFactor : number = 90
 const sizeFactor : number = 2.9
 const foreColor : string = "#388E3C"
 const backColor : string = "#BDBDBD"
+const rSizeFactor : number = 0.9
 
 class SqPartialLineStage {
 
@@ -61,5 +62,36 @@ class ScaleUtil {
 
     static updateValue(scale : number, dir : number, a : number, b : number) : number {
         return ScaleUtil.mirrorValue(scale, a, b) * dir * scGap
+    }
+}
+
+class DrawingUtil {
+
+    static drawPartialLine(context : CanvasRenderingContext2D, size : number, i : number, sc : number) {
+        context.save()
+        context.translate(size * rSizeFactor, size * rSizeFactor)
+        context.beginPath()
+        context.moveTo(0, 0)
+        context.lineTo(-size * rSizeFactor * sc, 0)
+        context.stroke()
+        context.restore()
+    }
+
+    static drawPLNode(context : CanvasRenderingContext2D, i : number, scale : number) {
+        const gap : number = w / (nodes + 1)
+        const size : number = gap / sizeFactor
+        const sc1 : number = ScaleUtil.divideScale(scale, 0, 2)
+        const sc2 : number = ScaleUtil.divideScale(scale, 1, 2)
+        context.lineCap = 'round'
+        context.lineWidth = Math.min(w, h) / strokeFactor
+        context.strokeStyle = foreColor
+        context.save()
+        context.translate(gap * (i + 1), h / 2)
+        context.rotate(Math.PI / 2 * sc2)
+        context.strokeRect(-size, -size, 2 * size, 2 * size)
+        for (var j = 0; j < lines; j++) {
+            DrawingUtil.drawPartialLine(context, size, j, ScaleUtil.divideScale(sc1, j, lines))
+        }
+        context.restore()
     }
 }
